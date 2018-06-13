@@ -1,0 +1,74 @@
+{
+  "name": "cc.js",
+  "version": "0.0.1",
+  "description": "Utility for parsing CEA608 captions out of NALs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/squarebracket/cc.js.git"
+  },
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "npm run lint && karma start test/karma/karma.conf.js",
+    "start": "npm-run-all -p watch serve",
+    "serve": "node scripts/server.js",
+    "watch": "npm run mkdirs && npm-run-all -p watch:*",
+    "watch:js": "watchify -s ccjs -p bundle-collapser/plugin lib/index.js -v -o dist/cc.js",
+    "watch:test": "watchify test/*.test.js -g browserify-shim -p bundle-collapser/plugin -v -o dist-test/cc.js",
+    "mkdirs": "mkdir -p dist dist-test",
+    "build": "npm run mkdirs && npm-run-all -p build:* && npm run collapse && npm run uglify",
+    "build:js": "browserify -s ccjs lib/index.js -o dist/cc.js",
+    "build:test": "browserify test/*.test.js -g browserify-shim -o dist-test/cc.js",
+    "lint": "eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "collapse": "npm-run-all -p collapse:*",
+    "collapse:js": "bundle-collapser dist/cc.js -o dist/cc.min.js",
+    "uglify": "npm-run-all -p uglify:*",
+    "uglify:js": "uglifyjs --mangle --compress -o dist/cc.min.js dist/cc.min.js",
+    "clean": "rm -rf dist dist-test",
+    "prepublish": "not-in-install && npm run build || in-install"
+  },
+  "browser": "./lib/index.js",
+  "keywords": [
+    "video",
+    "captions",
+    "cea608",
+    "cea708"
+  ],
+  "browserify-shim": {
+    "qunit": "global:QUnit"
+  },
+  "author": "Brightcove",
+  "license": "Apache-2.0",
+  "eslintConfig": {
+    "ignore": [
+      "dist",
+      "dist-test",
+      "docs",
+      "scripts"
+    ]
+  },
+  "files": [
+    "lib/",
+    "dist/"
+  ],
+  "devDependencies": {
+    "browserify": "^12.0.1",
+    "browserify-shim": "^3.8.12",
+    "bundle-collapser": "^1.2.1",
+    "eslint": "^2.10.2",
+    "express": "^4.13.3",
+    "in-publish": "^2.0.0",
+    "jshint": "^2.9.1-rc2",
+    "karma": "^0.13.9",
+    "karma-browserify": "^4.4.2",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-qunit": "^0.1.5",
+    "npm-run-all": "^1.4.0",
+    "portscanner": "^1.0.0",
+    "qunitjs": "^1.0.0",
+    "serve-static": "^1.10.0",
+    "uglify-js": "^2.6.2",
+    "watchify": "^3.6.1",
+    "webworkify": "^1.0.2"
+  }
+}
